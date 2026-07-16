@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:vm="clr-namespace:VoiceDictateDemo.ViewModels"
+	x:Class="VoiceDictateDemo.Pages.RegisterProgressPage"
+	x:DataType="vm:RegisterProgressViewModel"
+	Title="{Binding Title}"
+	NavigationPage.HasBackButton="False"
+	BackgroundColor="#F5F6F8">
+
+	<!-- Custom top bar: ToolbarItem text color is unreliable on Android -->
+	<ContentPage.Content>
+	<Grid RowDefinitions="Auto,Auto,*,Auto">
+
+		<Grid
+			Grid.Row="0"
+			ColumnDefinitions="*,Auto,Auto"
+			Padding="8,4"
+			BackgroundColor="White"
+			ColumnSpacing="4">
+			<Button
+				Grid.Column="1"
+				Text="{Binding MicToolbarText}"
+				TextColor="{Binding MicToolbarColor}"
+				BackgroundColor="Transparent"
+				FontAttributes="Bold"
+				FontSize="16"
+				Padding="12,8"
+				MinimumWidthRequest="72"
+				Command="{Binding ToggleVoiceCommand}"
+				IsEnabled="{Binding CanUseMic}" />
+			<Button
+				Grid.Column="2"
+				Text="Close"
+				TextColor="#333333"
+				BackgroundColor="Transparent"
+				FontSize="16"
+				Padding="12,8"
+				Command="{Binding CloseCommand}" />
+		</Grid>
+
+		<!-- Voice banner: listening / confirm / processing -->
+		<Border
+			Grid.Row="1"
+			IsVisible="{Binding ShowVoiceBanner}"
+			Stroke="{Binding MicToolbarColor}"
+			StrokeThickness="1"
+			BackgroundColor="#E8F4FC"
+			Margin="10,8,10,0"
+			Padding="12"
+			StrokeShape="RoundRectangle 6">
+			<VerticalStackLayout Spacing="8">
+				<Label
+					Text="{Binding StatusMessage}"
+					FontSize="13"
+					TextColor="#333333" />
+
+				<Label
+					IsVisible="{Binding IsListening}"
+					Text="{Binding PartialTranscript}"
+					FontSize="14"
+					FontAttributes="Italic"
+					TextColor="#555555" />
+
+				<VerticalStackLayout
+					IsVisible="{Binding IsAwaitingConfirm}"
+					Spacing="8">
+					<Label
+						Text="Confirm transcript"
+						FontAttributes="Bold"
+						FontSize="14" />
+					<Editor
+						Text="{Binding ConfirmedTranscript}"
+						AutoSize="TextChanges"
+						MinimumHeightRequest="80"
+						BackgroundColor="White" />
+					<Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+						<Button
+							Grid.Column="0"
+							Text="Re-record"
+							Command="{Binding ReRecordCommand}"
+							BackgroundColor="#6C757D"
+							TextColor="White" />
+						<Button
+							Grid.Column="1"
+							Text="Cancel"
+							Command="{Binding CancelTranscriptCommand}"
+							BackgroundColor="#ADB5BD"
+							TextColor="White" />
+						<Button
+							Grid.Column="2"
+							Text="Confirm"
+							Command="{Binding ConfirmTranscriptCommand}"
+							IsEnabled="{Binding CanConfirmTranscript}"
+							BackgroundColor="#0077C8"
+							TextColor="White" />
+					</Grid>
+				</VerticalStackLayout>
+
+				<ActivityIndicator
+					IsVisible="{Binding IsProcessing}"
+					IsRunning="{Binding IsProcessing}"
+					Color="#0077C8" />
+			</VerticalStackLayout>
+		</Border>
+
+		<ScrollView Grid.Row="2">
+			<VerticalStackLayout
+				Padding="10"
+				Spacing="20">
+
+				<Label
+					Text="{Binding JobSubtitle}"
+					FontSize="13"
+					TextColor="#666666" />
+
+				<!-- Progress status (Options) -->
+				<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="4,*,25" ColumnSpacing="0" RowSpacing="4">
+					<Label
+						Grid.Row="0"
+						Grid.Column="1"
+						Text="Progress status *"
+						FontSize="14" />
+					<BoxView
+						Grid.Row="1"
+						Grid.Column="0"
+						WidthRequest="4"
+						Color="#DC3545"
+						IsVisible="{Binding ProgressStatusText, Converter={StaticResource IsStringNullOrEmptyConverter}}" />
+					<Border
+						Grid.Row="1"
+						Grid.Column="1"
+						Stroke="#CED4DA"
+						StrokeThickness="1"
+						BackgroundColor="White"
+						Padding="10,12"
+						StrokeShape="RoundRectangle 2">
+						<Border.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding PickProgressStatusCommand}" />
+						</Border.GestureRecognizers>
+						<Label
+							Text="{Binding ProgressStatusText}"
+							TextColor="#212529"
+							FontSize="15" />
+					</Border>
+					<Label
+						Grid.Row="1"
+						Grid.Column="2"
+						Text="⌕"
+						FontSize="20"
+						VerticalOptions="Center"
+						HorizontalOptions="Center"
+						TextColor="#0077C8">
+						<Label.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding PickProgressStatusCommand}" />
+						</Label.GestureRecognizers>
+					</Label>
+				</Grid>
+
+				<!-- Activities (String multiline) -->
+				<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="4,*" ColumnSpacing="0" RowSpacing="4">
+					<Label
+						Grid.Row="0"
+						Grid.Column="1"
+						Text="Activities"
+						FontSize="14" />
+					<Border
+						Grid.Row="1"
+						Grid.Column="1"
+						Stroke="#CED4DA"
+						StrokeThickness="1"
+						BackgroundColor="White"
+						Padding="6"
+						StrokeShape="RoundRectangle 2">
+						<Editor
+							Text="{Binding ActivitiesText}"
+							Placeholder="Enter the activities here"
+							AutoSize="TextChanges"
+							MinimumHeightRequest="90"
+							FontSize="15" />
+					</Border>
+				</Grid>
+
+				<!-- Photo (ignored by voice) -->
+				<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="4,*" ColumnSpacing="0" RowSpacing="4">
+					<Label
+						Grid.Row="0"
+						Grid.Column="1"
+						Text="Photo (ignored by voice)"
+						FontSize="14" />
+					<Border
+						Grid.Row="1"
+						Grid.Column="1"
+						Stroke="#CED4DA"
+						StrokeThickness="1"
+						BackgroundColor="White"
+						Padding="10,14"
+						StrokeShape="RoundRectangle 2">
+						<Border.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding TogglePhotoCommand}" />
+						</Border.GestureRecognizers>
+						<HorizontalStackLayout Spacing="10">
+							<Label Text="🖼" FontSize="22" VerticalOptions="Center" />
+							<Label
+								Text="{Binding PhotoLabel}"
+								FontSize="15"
+								TextColor="#212529"
+								VerticalOptions="Center" />
+						</HorizontalStackLayout>
+					</Border>
+				</Grid>
+
+				<!-- Hours -->
+				<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="4,*,25" ColumnSpacing="0" RowSpacing="4">
+					<Label
+						Grid.Row="0"
+						Grid.Column="1"
+						Text="Worked hours"
+						FontSize="14" />
+					<Border
+						Grid.Row="1"
+						Grid.Column="1"
+						Stroke="#CED4DA"
+						StrokeThickness="1"
+						BackgroundColor="White"
+						Padding="10,12"
+						StrokeShape="RoundRectangle 2">
+						<Border.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding PickHoursCommand}" />
+						</Border.GestureRecognizers>
+						<Label
+							Text="{Binding HoursText}"
+							TextColor="#212529"
+							FontSize="15" />
+					</Border>
+					<Label
+						Grid.Row="1"
+						Grid.Column="2"
+						Text="▾"
+						FontSize="18"
+						VerticalOptions="Center"
+						HorizontalOptions="Center"
+						TextColor="#0077C8">
+						<Label.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding PickHoursCommand}" />
+						</Label.GestureRecognizers>
+					</Label>
+				</Grid>
+
+				<Label
+					Text="{Binding StatusMessage}"
+					IsVisible="{Binding ShowVoiceBanner, Converter={StaticResource InvertedBoolConverter}}"
+					FontSize="12"
+					TextColor="#666666" />
+			</VerticalStackLayout>
+		</ScrollView>
+
+		<Button
+			Grid.Row="3"
+			Text="OK"
+			Margin="10"
+			HeightRequest="48"
+			BackgroundColor="#0077C8"
+			TextColor="White"
+			FontAttributes="Bold"
+			Command="{Binding OkCommand}"
+			IsEnabled="{Binding AllPropertiesAreValid}" />
+	</Grid>
+	</ContentPage.Content>
+</ContentPage>
