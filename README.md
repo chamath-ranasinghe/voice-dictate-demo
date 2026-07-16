@@ -1,6 +1,6 @@
 # Voice Dictate Demo
 
-Android-only .NET MAUI sandbox that mirrors Ultimo Go+ **Register progress** (`WorkflowPage`) voice flow:
+Android-only .NET MAUI sandbox **Register progress** (`WorkflowPage`) voice flow:
 
 **Mic → live caption → stop → edit/confirm transcript → OpenAI (`gpt-4o-mini`) fills fields → review → OK**
 
@@ -71,7 +71,7 @@ Other buttons:
 | **Cancel** (confirm panel) | Discard transcript |
 | **Re-record** | Start listening again |
 | **Close** | Demo close alert |
-| Field rows | Manual pickers / editor (same as Go+) |
+| Field rows | Manual pickers / editor |
 
 ---
 
@@ -81,7 +81,7 @@ Other buttons:
 |-------|------|
 | Community Toolkit `ISpeechToText` | On-device STT + live partial results |
 | OpenAI Chat (`gpt-4o-mini`) | Structured field extraction after Confirm |
-| `VoiceFieldSchemaBuilder` / `VoiceFieldApplier` | Same contract shape as the Go+ plan |
+| `VoiceFieldSchemaBuilder` / `VoiceFieldApplier` |
 
 No separate server process is required.
 
