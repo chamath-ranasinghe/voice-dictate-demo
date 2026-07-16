@@ -100,4 +100,4 @@ No separate server process is required.
 
 ## Note
 
-This is a **sandbox** for demos and UX/STT validation. Port proven pieces into Ultimo Go+ on a feature branch when ready.
+This is a **sandbox** for demos and UX/STT validation.
